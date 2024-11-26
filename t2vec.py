@@ -10,15 +10,15 @@ import torch
 
 ## server
 ## cell100
-## python t2vec.py -vocab_size 18864 -criterion_name "KLDIV" -knearestvocabs "/home/xiucheng/Github/t2vec/data/porto-vocab-dist-cell100.h5"
-## python t2vec.py -mode 2 -vocab_size 18864 -checkpoint "/home/xiucheng/Github/t2vec/data/best_model_gen.pt" -prefix "exp1"
+## python t2vec.py -vocab_size 18864 -criterion_name "KLDIV" -knearestvocabs "/home/zzhangjf/t2vec/data/porto-vocab-dist-cell100.h5"
+## python t2vec.py -mode 2 -vocab_size 18864 -checkpoint "/home/zzhangjf/t2vec/data/best_model_gen.pt" -prefix "exp1"
 
 parser = argparse.ArgumentParser(description="train.py")
 
-parser.add_argument("-data", default="/home/xiucheng/Github/t2vec/data",
+parser.add_argument("-data", default="/home/zzhangjf/t2vec/data",
     help="Path to training and validating data")
 
-parser.add_argument("-checkpoint", default="/home/xiucheng/Github/t2vec/data/checkpoint.pt",
+parser.add_argument("-checkpoint", default="/home/zzhangjf/t2vec/data/checkpoint.pt",
     help="The saved checkpoint")
 
 parser.add_argument("-prefix", default="exp", help="Prefix of trjfile")

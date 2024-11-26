@@ -41,8 +41,6 @@ def KLDIVloss(output, target, criterion, V, D):
     ## k-nearest neighbors for target
     indices = torch.index_select(V, 0, target)
     ## (batch, k) gather along vocab_size dimension
-    print(output.shape)
-    print(torch.max(indices))
     outputk = torch.gather(output, 1, indices)
     ## (batch, k) index in vocab_size dimension
     targetk = torch.index_select(D, 0, target)
