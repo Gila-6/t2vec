@@ -36,10 +36,13 @@ def KLDIVloss(output, target, criterion, V, D):
     V (vocab_size, k)
     D (vocab_size, k)
     """
+
     ## (batch, k) index in vocab_size dimension
     ## k-nearest neighbors for target
     indices = torch.index_select(V, 0, target)
     ## (batch, k) gather along vocab_size dimension
+    print(output.shape)
+    print(torch.max(indices))
     outputk = torch.gather(output, 1, indices)
     ## (batch, k) index in vocab_size dimension
     targetk = torch.index_select(D, 0, target)
@@ -168,7 +171,6 @@ def validate(valData, model, lossF, args):
 
 def train(args):
     logging.basicConfig(filename=os.path.join(args.data, "training.log"), level=logging.INFO)
-
     trainsrc = os.path.join(args.data, "train.src")
     traintrg = os.path.join(args.data, "train.trg")
     trainmta = os.path.join(args.data, "train.mta")
