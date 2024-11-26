@@ -24,7 +24,7 @@ def pad_array(a, max_length, PAD=constants.PAD):
 def pad_arrays(a):
     max_length = max(map(len, a))
     a = [pad_array(a[i], max_length) for i in range(len(a))]
-    a = np.stack(a).astype(np.int)
+    a = np.stack(a).astype(int)
     return torch.LongTensor(a)
 
 def pad_arrays_pair(src, trg, keep_invp=False):
@@ -43,8 +43,8 @@ def pad_arrays_pair(src, trg, keep_invp=False):
 
     assert len(src) == len(trg), "source and target should have the same length"
     idx = argsort(src)
-    src = list(np.array(src)[idx])
-    trg = list(np.array(trg)[idx])
+    src = [src[i] for i in idx]
+    trg = [trg[i] for i in idx]
 
     lengths = list(map(len, src))
     lengths = torch.LongTensor(lengths)
@@ -81,7 +81,7 @@ def pad_arrays_keep_invp(src):
     invp (batch,): inverse permutation, src.t()[invp] gets original order
     """
     idx = argsort(src)
-    src = list(np.array(src)[idx])
+    src = [src[i] for i in idx]
     lengths = list(map(len, src))
     lengths = torch.LongTensor(lengths)
     src = pad_arrays(src)
@@ -145,16 +145,22 @@ class DataLoader():
                 print("Read line {}".format(num_line))
         ## if vliadate is True we merge all buckets into one
         if self.validate == True:
-            self.srcdata = np.array(merge(*self.srcdata))
-            self.trgdata = np.array(merge(*self.trgdata))
-            self.mtadata = np.array(merge(*self.mtadata))
+            # self.srcdata = np.array(merge(*self.srcdata))
+            # self.trgdata = np.array(merge(*self.trgdata))
+            # self.mtadata = np.array(merge(*self.mtadata))
+            self.srcdata = [array for sublist in self.srcdata for array in sublist]
+            self.trgdata = [array for sublist in self.trgdata for array in sublist]
+            self.mtadata = [array for sublist in self.mtadata for array in sublist]
 
             self.start = 0
             self.size = len(self.srcdata)
         else:
-            self.srcdata = list(map(np.array, self.srcdata))
-            self.trgdata = list(map(np.array, self.trgdata))
-            self.mtadata = list(map(np.array, self.mtadata))
+            # self.srcdata = list(map(np.array, self.srcdata))
+            # self.trgdata = list(map(np.array, self.trgdata))
+            # self.mtadata = list(map(np.array, self.mtadata))
+            self.srcdata = list(np.array(self.srcdata, dtype=object))
+            self.trgdata = list(np.array(self.trgdata, dtype=object))
+            self.mtadata = list(np.array(self.mtadata, dtype=object))
 
             self.allocation = list(map(len, self.srcdata))
             self.p = np.array(self.allocation) / sum(self.allocation)
@@ -177,9 +183,9 @@ class DataLoader():
             bucket = np.nonzero(sample)[0][0]
             ## select data from the bucket
             idx = np.random.choice(len(self.srcdata[bucket]), self.batch)
-            src = self.srcdata[bucket][idx]
-            trg = self.trgdata[bucket][idx]
-            mta = self.mtadata[bucket][idx]
+            src = [self.srcdata[bucket][i] for i in idx]
+            trg = [self.trgdata[bucket][i] for i in idx]
+            mta = [self.mtadata[bucket][i] for i in idx]
             return list(src), list(trg), list(mta)
 
     def getbatch_generative(self):
